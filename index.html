@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskFlow — Stay on Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="34" height="34">
+          <path d="M4 20 C 10 8, 16 8, 20 20 S 30 32, 36 20" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div class="brand__text">
+        <h1>TaskFlow</h1>
+        <p id="todayDate" class="brand__date"></p>
+      </div>
+    </div>
+
+    <div class="topbar__search">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="text" id="searchInput" placeholder="Search tasks, notes, categories…" aria-label="Search tasks">
+    </div>
+  </header>
+
+  <main class="layout">
+
+
+    <section class="stats" aria-label="Task statistics">
+      <div class="stat-card">
+        <p class="stat-card__label">Total</p>
+        <p class="stat-card__value" id="statTotal">0</p>
+      </div>
+      <div class="stat-card stat-card--accent">
+        <p class="stat-card__label">Completed</p>
+        <p class="stat-card__value" id="statCompleted">0</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__label">Pending</p>
+        <p class="stat-card__value" id="statPending">0</p>
+      </div>
+      <div class="stat-card stat-card--gold">
+        <p class="stat-card__label">Important</p>
+        <p class="stat-card__value" id="statImportant">0</p>
+      </div>
+
+      <div class="flow-meter" role="img" aria-label="Completion progress">
+        <svg viewBox="0 0 320 60" class="flow-meter__track" preserveAspectRatio="none">
+          <path d="M2 40 C 50 10, 90 10, 130 40 S 210 70, 250 40 S 300 10, 318 30" fill="none" stroke="var(--line)" stroke-width="3" stroke-linecap="round"/>
+          <path id="flowProgress" d="M2 40 C 50 10, 90 10, 130 40 S 210 70, 250 40 S 300 10, 318 30" fill="none" stroke="var(--gold)" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <p class="flow-meter__label"><span id="statPercent">0</span>% of your flow is complete</p>
+      </div>
+    </section>
+
+ 
+    <section class="card form-card" aria-label="Add a task">
+      <h2 class="section-title">New task</h2>
+      <form id="taskForm">
+        <div class="field">
+          <label for="titleInput">Title <span class="required">*</span></label>
+          <input type="text" id="titleInput" placeholder="What needs doing?" maxlength="80">
+        </div>
+
+        <div class="field">
+          <label for="descInput">Description</label>
+          <textarea id="descInput" rows="2" placeholder="Add a few details (optional)" maxlength="280"></textarea>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="priorityInput">Priority</label>
+            <select id="priorityInput">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="categoryInput">Category</label>
+            <select id="categoryInput">
+              <option value="work">Work</option>
+              <option value="personal">Personal</option>
+              <option value="study">Study</option>
+              <option value="shopping">Shopping</option>
+              <option value="health">Health</option>
+              <option value="others">Others</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="dueInput">Due date</label>
+            <input type="date" id="dueInput">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary" id="submitBtn">Add task</button>
+          <button type="button" class="btn btn--ghost" id="clearFormBtn">Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="controls" aria-label="Filter and sort tasks">
+      <div class="filters" id="filterGroup">
+        <button class="chip is-active" data-filter="all">All</button>
+        <button class="chip" data-filter="pending">Pending</button>
+        <button class="chip" data-filter="completed">Completed</button>
+        <button class="chip" data-filter="important">Important</button>
+        <button class="chip" data-filter="high">High priority</button>
+        <button class="chip" data-filter="medium">Medium priority</button>
+        <button class="chip" data-filter="low">Low priority</button>
+        <button class="chip" data-filter="today">Today</button>
+        <button class="chip" data-filter="upcoming">Upcoming</button>
+      </div>
+
+      <div class="sort">
+        <label for="sortSelect">Sort</label>
+        <select id="sortSelect">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="az">Title A–Z</option>
+          <option value="priority">Priority</option>
+          <option value="due">Due date</option>
+        </select>
+      </div>
+    </section>
+
+   
+    <section aria-label="Your tasks">
+      <h2 class="section-title">Your tasks</h2>
+      <div id="taskList" class="task-list"></div>
+
+      <div id="emptyState" class="empty-state" hidden>
+        <svg viewBox="0 0 120 120" width="96" height="96" aria-hidden="true">
+          <path d="M10 60 C 25 30, 45 30, 60 60 S 95 90, 110 60" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="60" cy="60" r="3" fill="var(--gold)"/>
+        </svg>
+        <p class="empty-state__title">No tasks yet</p>
+        <p class="empty-state__subtitle">Start by adding your first task above.</p>
+      </div>
+    </section>
+
+  </main>
+
+  
+  <div class="modal-overlay" id="modalOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Delete this task?</h3>
+      <p>This can't be undone.</p>
+      <div class="modal__actions">
+        <button class="btn btn--ghost" id="modalCancel">Cancel</button>
+        <button class="btn btn--danger" id="modalDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TOAST CONTAINER ===================== -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
